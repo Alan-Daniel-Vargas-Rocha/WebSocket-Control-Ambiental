@@ -1,3 +1,4 @@
+// src/config/index.js
 require('dotenv').config();
 
 module.exports = {
@@ -6,13 +7,18 @@ module.exports = {
     wsPort: process.env.WS_PORT || 8080,
     nodeEnv: process.env.NODE_ENV || 'development',
     
-    // 🔑 CLAVE PARA ESP32 (TÚ LA CREAS)
-    esp32ApiKey: process.env.ESP32_API_KEY,  // "MiClaveSuperSecretaParaESP32_2024"
+    // 🔑 Claves
+    esp32ApiKey: process.env.ESP32_API_KEY,
+    jwtSecret: process.env.JWT_SECRET,
+    frontendUrl: process.env.FRONTEND_URL,
+    allowedOrigins: process.env.ALLOWED_ORIGINS?.split(',') || [],
     
-    // 🔐 CLAVE PARA JWT (Render API Key o tú la creas)
-    jwtSecret: process.env.JWT_SECRET,       // "rnd_abc123..." o "MiClaveJWTParaFrontend_2024"
+    // ✅ AGREGAR rateLimit
+    rateLimit: {
+        windowMs: parseInt(process.env.RATE_LIMIT_WINDOW) * 60 * 1000 || 15 * 60 * 1000,
+        max: parseInt(process.env.RATE_LIMIT_MAX) || 100
+    },
     
-    // 🌐 URLs (Render te las da)
-    frontendUrl: process.env.FRONTEND_URL,   // "https://mi-frontend.onrender.com"
-    allowedOrigins: process.env.ALLOWED_ORIGINS?.split(',') || []
+    // Opcional
+    logLevel: process.env.LOG_LEVEL || 'info'
 };
