@@ -14,6 +14,8 @@ const server = http.createServer(app);
 
 // ============= MIDDLEWARES =============
 
+app.set('trust proxy', 1); 
+
 // Seguridad
 app.use(helmet({
     contentSecurityPolicy: false // Para desarrollo
@@ -45,11 +47,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRoutes);
 
 // Ruta de salud
-app.get('/health', (req, res) => {
+app.get('/', (req, res) => {
     res.json({
-        status: 'OK',
-        timestamp: Date.now(),
-        uptime: process.uptime()
+        name: 'IoT Monitoring API',
+        version: '2.0.0',
+        status: 'online',
+        endpoints: {
+            data: '/api/data (GET)',
+            sensor: '/api/sensor (POST)',
+            status: '/api/status (GET)',
+            health: '/health (GET)',
+            login: '/api/auth/login (POST)'
+        },
+        docs: 'https://websocket-control-ambiental.onrender.com'
     });
 });
 
