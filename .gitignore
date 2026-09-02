@@ -1,12 +1,13 @@
+# ⚠️ CRUCIAL - NUNCA SUBIR .env A GITHUB
+.env
+.env.local
+.env.production
+.env.*.local
+
 # Dependencias
 node_modules/
 package-lock.json
 yarn.lock
-
-# Variables de entorno
-.env
-.env.local
-.env.production
 
 # Logs
 logs/
@@ -19,13 +20,22 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 *.tmp
+*.swp
+*.swo
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
+*.iml
 
 # Build
 dist/
 build/
+coverage/
+.nyc_output/
+
+# Otros
+*.pem
+*.key
+*.crt
+.htaccess
