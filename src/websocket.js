@@ -73,43 +73,51 @@ class WebSocketServer {
         this.broadcastClientCount();
     }
 
-    handleMessage(clientId, message) {
-        try {
-            const data = JSON.parse(message);
-            console.log(`📩 Client ${clientId}:`, data);
+handleMessage(clientId, message) {
+    try {
+        const data = JSON.parse(message);
+        console.log(`📩 Client ${clientId}:`, data);
 
-            switch(data.type) {
-                case 'ping':
-                    this.sendToClient(clientId, { type: 'pong', timestamp: Date.now() });
-                    break;
+        switch(data.type) {
+            case 'ping':
+                this.sendToClient(clientId, { type: 'pong', timestamp: Date.now() });
+                break;
+                
+            case 'pong':  // ✅ AGREGADO
+                // Responder al pong (mantener conexión activa)
+                const client = this.clients.get(clientId);
+                if (client) {
+                    client.lastPong = Date.now();
+                }
+                break;
+                
+            case 'sensorData':
+                if (this.validateSensorData(data)) {
+                    this.sensorData = {
+                        temperature: parseFloat(data.temperature),
+                        humidity: parseFloat(data.humidity),
+                        gasValue: parseInt(data.gasValue),
+                        timestamp: Date.now()
+                    };
+                    this.broadcastData();
+                    console.log(`📊 Datos recibidos del cliente ${clientId}`);
+                }
+                break;
 
-                case 'sensorData':
-                    // Validar datos del sensor
-                    if (this.validateSensorData(data)) {
-                        this.sensorData = {
-                            temperature: parseFloat(data.temperature),
-                            humidity: parseFloat(data.humidity),
-                            gasValue: parseInt(data.gasValue),
-                            timestamp: Date.now()
-                        };
-                        this.broadcastData();
-                    }
-                    break;
+            case 'getData':
+                this.sendToClient(clientId, {
+                    type: 'dataUpdate',
+                    data: this.sensorData
+                });
+                break;
 
-                case 'getData':
-                    this.sendToClient(clientId, {
-                        type: 'dataUpdate',
-                        data: this.sensorData
-                    });
-                    break;
-
-                default:
-                    console.warn(`⚠️ Unknown message type from client ${clientId}:`, data.type);
-            }
-        } catch (error) {
-            console.error(`❌ Error processing message from client ${clientId}:`, error);
+            default:
+                console.warn(`⚠️ Unknown message type from client ${clientId}:`, data.type);
         }
+    } catch (error) {
+        console.error(`❌ Error processing message:`, error);
     }
+}
 
     validateSensorData(data) {
         const temp = parseFloat(data.temperature);
