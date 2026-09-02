@@ -63,6 +63,15 @@ app.get('/', (req, res) => {
     });
 });
 
+// Ruta de salud
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'OK',
+        timestamp: Date.now(),
+        uptime: process.uptime()
+    });
+});
+
 // ============= WEBSOCKET =============
 wsServer.initialize(server);
 
