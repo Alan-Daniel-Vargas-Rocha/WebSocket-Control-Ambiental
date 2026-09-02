@@ -7,7 +7,7 @@ const config = require('../config');
 const verifyApiKey = (req, res, next) => {
     const apiKey = req.headers['x-api-key'] || req.body.apiKey;
     
-    if (!apiKey || apiKey !== config.apiKey) {
+    if (!apiKey || apiKey !== config.esp32ApiKey) {
         return res.status(401).json({
             success: false,
             error: 'Invalid or missing API Key'
